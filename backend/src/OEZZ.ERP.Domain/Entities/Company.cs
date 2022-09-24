@@ -1,4 +1,6 @@
-﻿namespace OEZZ.ERP.Domain.Base;
+﻿using OEZZ.ERP.Domain.Base;
+
+namespace OEZZ.ERP.Domain.Entities;
 
 public class Company : Entity<Guid>
 {

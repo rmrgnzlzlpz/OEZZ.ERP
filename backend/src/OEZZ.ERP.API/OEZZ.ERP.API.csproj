@@ -6,4 +6,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\OEZZ.ERP.Application\OEZZ.ERP.Application.csproj" />
+      <ProjectReference Include="..\OEZZ.ERP.Domain\OEZZ.ERP.Domain.csproj" />
+      <ProjectReference Include="..\OEZZ.ERP.Infrastructure\OEZZ.ERP.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>

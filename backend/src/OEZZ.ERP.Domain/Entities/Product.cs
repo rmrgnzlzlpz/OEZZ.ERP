@@ -2,12 +2,20 @@
 
 namespace OEZZ.ERP.Domain.Entities;
 
-public class Product : Entity<Guid>
+public class Product : CompanyEntity<Guid>
 {
-    // Multi-tenant
-    public Guid CompanyId { get; set; }
-    public Company Company { get; set; }
-    public string Name { get; set; }
-    public Guid SubcategoryId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public Guid SubcategoryId { get; set; } = Guid.Empty;
     public Subcategory Subcategory { get; set; }
+
+    protected Product()
+    {
+    }
+
+    public Product(Guid companyId, string name, Guid subcategoryId)
+    {
+        CompanyId = companyId;
+        Name = name;
+        SubcategoryId = subcategoryId;
+    }
 }
