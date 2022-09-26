@@ -26,10 +26,10 @@ public class CreateProductHandler : IRequestHandler<CreateProductCommand, IResul
         var companyExists = await _companyRepository.Any(new CompanyExistsSpecification(request.CompanyId), cancellationToken);
         if (!companyExists)
         {
-            return GenericResult.Bad<CreateProductDto>($"Compañía {request.CompanyId} no existe");
+            return GenericResult.Bad<CreateProductDto>($"Company {request.CompanyId} not found");
         }
-        
-        var product = new Product(request.CompanyId, request.Name, request.SubcategoryId);
+
+        var product = new Product(request.Name, request.SubcategoryId);
         await _productRepository.Add(product, cancellationToken);
 
         return new CreateProductDto(product.Id, product.SubcategoryId, product.Name).Ok();

@@ -2,7 +2,7 @@
 using OEZZ.ERP.Domain.Base;
 using OEZZ.ERP.Domain.Ports;
 using OEZZ.ERP.Domain.Specifications;
-using OEZZ.ERP.Infrastructure.Contexts;
+using OEZZ.ERP.Infrastructure.Data;
 
 namespace OEZZ.ERP.Infrastructure.Adapters;
 
@@ -21,6 +21,7 @@ public class SqlRepository<T, TId> : IRepository<T, TId>, IDisposable where T : 
     {
         _ = entity ?? throw new ArgumentNullException(nameof(entity));
         await _dbSet.AddAsync(entity, cancellationToken);
+        await _context.Commit(cancellationToken);
     }
 
     public async Task<T?> Get(TId id, CancellationToken cancellationToken)
