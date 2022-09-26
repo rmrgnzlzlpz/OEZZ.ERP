@@ -1,0 +1,28 @@
+﻿@page "/counter"
+
+@inject HttpClient HttpClient;
+
+<PageTitle>Counter</PageTitle>
+<h1>@_message</h1>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @_currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int _currentCount = 0;
+    private string _message = string.Empty;
+
+    private void IncrementCount()
+    {
+        _currentCount++;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _message = await HttpClient.GetStringAsync("/api");
+    }
+
+}
