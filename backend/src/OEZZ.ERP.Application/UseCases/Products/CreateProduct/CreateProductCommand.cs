@@ -5,6 +5,5 @@ namespace OEZZ.ERP.Application.UseCases.Products.CreateProduct;
 
 public record CreateProductCommand(
     string Name,
-    Guid SubcategoryId,
-    Guid CompanyId
-) : ByCompanyCommand(CompanyId), IRequest<IResult<CreateProductDto>>;
+    Guid SubcategoryId
+) : IRequest<IResult<CreateProductDto>>;

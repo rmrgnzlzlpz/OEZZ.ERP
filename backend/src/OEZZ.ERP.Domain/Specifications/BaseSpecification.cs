@@ -4,7 +4,7 @@ using OEZZ.ERP.Domain.Enums;
 
 namespace OEZZ.ERP.Domain.Specifications;
 
-public class BaseSpecification<T> : ISpecification<T> where T : BaseEntity
+public abstract class BaseSpecification<T> : ISpecification<T> where T : BaseEntity
 {
-    public Expression<Func<T, bool>>? Query { get; protected set; }
+    public Expression<Func<T, bool>>? Query { get; protected init; }
 }

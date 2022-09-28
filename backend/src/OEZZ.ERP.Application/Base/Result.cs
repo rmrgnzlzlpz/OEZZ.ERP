@@ -5,7 +5,7 @@ namespace OEZZ.ERP.Application.Base;
 public class Result : IResult
 {
     public int Code { get; }
-    public bool Success => Errors?.Any() ?? true;
+    public bool Success => !Errors?.Any() ?? true;
     public string Message { get; }
     public IEnumerable<string>? Errors { get; }
 

@@ -3,30 +3,30 @@ using OEZZ.ERP.Application.Base;
 using OEZZ.ERP.Application.Common;
 using OEZZ.ERP.Domain.Entities;
 using OEZZ.ERP.Domain.Ports;
-using OEZZ.ERP.Domain.Specifications.Companies;
+using OEZZ.ERP.Domain.Specifications.Subcategories;
 
 namespace OEZZ.ERP.Application.UseCases.Products.CreateProduct;
 
 public class CreateProductHandler : IRequestHandler<CreateProductCommand, IResult<CreateProductDto>>
 {
     private readonly IRepository<Product, Guid> _productRepository;
-    private readonly IRepository<Company, Guid> _companyRepository;
+    private readonly IRepository<Subcategory, Guid> _subcategoryRepository;
 
     public CreateProductHandler(
         IRepository<Product, Guid> productRepository,
-        IRepository<Company, Guid> companyRepository
+        IRepository<Subcategory, Guid> subcategoryRepository
     )
     {
         _productRepository = productRepository;
-        _companyRepository = companyRepository;
+        _subcategoryRepository = subcategoryRepository;
     }
 
     public async Task<IResult<CreateProductDto>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        var companyExists = await _companyRepository.Any(new CompanyExistsSpecification(request.CompanyId), cancellationToken);
+        var companyExists = await _subcategoryRepository.Any(new SubcategoryExistsSpecification(request.SubcategoryId), cancellationToken);
         if (!companyExists)
         {
-            return GenericResult.Bad<CreateProductDto>($"Company {request.CompanyId} not found");
+            return GenericResult.Bad<CreateProductDto>($"Subcategory {request.SubcategoryId} not found");
         }
 
         var product = new Product(request.Name, request.SubcategoryId);

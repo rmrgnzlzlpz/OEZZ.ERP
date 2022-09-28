@@ -9,35 +9,35 @@ namespace OEZZ.ERP.Infrastructure.Data;
 public class SqlContext : DbContext
 {
     private readonly IConfiguration _configuration;
-    private readonly Guid _tenantId;
+    public Guid TenantId { get; }
 
     public SqlContext(DbContextOptions options, IConfiguration configuration, ITenantGetter tenantGetter) : base(options)
     {
         _configuration = configuration;
-        _tenantId = tenantGetter.Tenant;
+        TenantId = tenantGetter.Tenant;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         var schema = _configuration.GetValue<string>("ERP.Persistence:Schema");
         modelBuilder.HasDefaultSchema(schema);
-
+        
         modelBuilder.ApplyConfiguration(new BaseEntityConfiguration<Company>());
-        modelBuilder.ApplyConfiguration(new TenantEntityConfiguration<Product, Guid>(_tenantId));
-        modelBuilder.ApplyConfiguration(new TenantEntityConfiguration<Category, Guid>(_tenantId));
-        modelBuilder.ApplyConfiguration(new TenantEntityConfiguration<Subcategory, Guid>(_tenantId));
+        modelBuilder.ApplyConfiguration(new TenantEntityConfiguration<Product, Guid>(this));
+        modelBuilder.ApplyConfiguration(new TenantEntityConfiguration<Category, Guid>(this));
+        modelBuilder.ApplyConfiguration(new TenantEntityConfiguration<Subcategory, Guid>(this));
         
         base.OnModelCreating(modelBuilder);
     }
 
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
         foreach (var entry in ChangeTracker.Entries<TenantEntity<Guid>>().ToList())
         {
             if (entry.State is EntityState.Added or EntityState.Modified)
             {
                 var utcNow = DateTime.UtcNow;
-                entry.Entity.TenantId = _tenantId;
+                entry.Entity.TenantId = TenantId;
                 entry.Entity.CreatedAt = utcNow;
                 entry.Entity.UpdatedAt = utcNow;
             }

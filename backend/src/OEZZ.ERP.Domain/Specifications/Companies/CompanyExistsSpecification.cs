@@ -1,12 +1,10 @@
-﻿using System.Linq.Expressions;
-using OEZZ.ERP.Domain.Entities;
+﻿using OEZZ.ERP.Domain.Entities;
 
 namespace OEZZ.ERP.Domain.Specifications.Companies;
 
-public class CompanyExistsSpecification : BaseSpecification<Company>
+public class CompanyExistsSpecification : EntityExistsSpecification<Company>
 {
-    public CompanyExistsSpecification(Guid id)
+    public CompanyExistsSpecification(Guid id) : base(id)
     {
-        Query = company => company.Id == id;
     }
 }
