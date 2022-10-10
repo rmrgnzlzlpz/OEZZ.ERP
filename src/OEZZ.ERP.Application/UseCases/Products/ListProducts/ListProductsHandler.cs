@@ -26,8 +26,8 @@ public class ListProductsHandler : IRequestHandler<ListProductsQuery, IResult<Pa
             request.Order.IsAscending(),
             request.OrderBy
         );
-        IEnumerable<Product> products = await _productRepository.GetBy(specification, cancellationToken);
-        int totalProducts = await _productRepository.Count(specification, cancellationToken);
+        IEnumerable<Product> products = await _productRepository.GetByAsync(specification, cancellationToken);
+        int totalProducts = await _productRepository.CountAsync(specification, cancellationToken);
         PaginatedResponse<ProductDto> paginatedResponse = new(
             Data: products.Select(x => new ProductDto(x.SubcategoryId, x.Name, x.Status, x.CreatedAt, x.UpdatedAt)),
             TotalRecords: totalProducts

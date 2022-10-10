@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using OEZZ.ERP.Domain.Base;
 using OEZZ.ERP.Domain.Entities;
+using OEZZ.ERP.Domain.Enums;
 using OEZZ.ERP.Infrastructure.Data.Configurations;
 
 namespace OEZZ.ERP.Infrastructure.Data;
@@ -21,12 +23,12 @@ public class SqlContext : DbContext
     {
         var schema = _configuration.GetValue<string>("ERP.Persistence:Schema");
         modelBuilder.HasDefaultSchema(schema);
-        
+
         modelBuilder.ApplyConfiguration(new BaseEntityConfiguration<Company>());
         modelBuilder.ApplyConfiguration(new TenantEntityConfiguration<Product, Guid>(this));
         modelBuilder.ApplyConfiguration(new TenantEntityConfiguration<Category, Guid>(this));
         modelBuilder.ApplyConfiguration(new TenantEntityConfiguration<Subcategory, Guid>(this));
-        
+
         base.OnModelCreating(modelBuilder);
     }
 
@@ -34,19 +36,28 @@ public class SqlContext : DbContext
     {
         foreach (var entry in ChangeTracker.Entries<TenantEntity<Guid>>().ToList())
         {
-            if (entry.State is EntityState.Added or EntityState.Modified)
+            var utcNow = DateTime.UtcNow;
+            entry.Entity.UpdatedAt = utcNow;
+            switch (entry.State)
             {
-                var utcNow = DateTime.UtcNow;
-                entry.Entity.TenantId = TenantId;
-                entry.Entity.CreatedAt = utcNow;
-                entry.Entity.UpdatedAt = utcNow;
+                case EntityState.Added:
+                {
+                    entry.Entity.TenantId = TenantId;
+                    entry.Entity.CreatedAt = utcNow;
+                    break;
+                }
+                case EntityState.Deleted:
+                {
+                    entry.Entity.Status = Status.Deleted;
+                    break;
+                }
             }
         }
 
         return base.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task Commit(CancellationToken cancellationToken = default)
+    public async Task CommitAsync(CancellationToken cancellationToken = default)
     {
         await SaveChangesAsync(cancellationToken).ConfigureAwait(false);
     }

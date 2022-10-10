@@ -23,14 +23,14 @@ public class CreateProductHandler : IRequestHandler<CreateProductCommand, IResul
 
     public async Task<IResult<CreateProductDto>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        var companyExists = await _subcategoryRepository.Any(new SubcategoryExistsSpecification(request.SubcategoryId), cancellationToken);
+        var companyExists = await _subcategoryRepository.AnyAsync(new SubcategoryExistsSpecification(request.SubcategoryId), cancellationToken);
         if (!companyExists)
         {
             return GenericResult.Bad<CreateProductDto>($"Subcategory {request.SubcategoryId} not found");
         }
 
         var product = new Product(request.Name, request.SubcategoryId);
-        await _productRepository.Add(product, cancellationToken);
+        await _productRepository.AddAsync(product, cancellationToken);
 
         return new CreateProductDto(product.Id, product.SubcategoryId, product.Name).Ok();
     }

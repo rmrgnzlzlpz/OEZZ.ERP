@@ -17,19 +17,25 @@ public class SqlRepository<T, TId> : IRepository<T, TId>, IDisposable where T : 
         _dbSet = context.Set<T>();
     }
 
-    public async Task Add(T? entity, CancellationToken cancellationToken)
+    public async Task AddAsync(T? entity, CancellationToken cancellationToken)
     {
         _ = entity ?? throw new ArgumentNullException(nameof(entity));
         await _dbSet.AddAsync(entity, cancellationToken);
-        await _context.Commit(cancellationToken);
+        await _context.CommitAsync(cancellationToken);
     }
 
-    public async Task<T?> Get(TId id, CancellationToken cancellationToken)
+    public async Task<T?> FindAsync(TId id, CancellationToken cancellationToken)
     {
         return await _dbSet.FindAsync(new object?[] { id }, cancellationToken: cancellationToken);
     }
 
-    public async Task<IEnumerable<T>> GetBy(IPaginationSpecification<T> specification, CancellationToken cancellationToken)
+    public async Task DeleteAsync(T entity, CancellationToken cancellationToken)
+    {
+        _ = _dbSet.Remove(entity);
+        await _context.CommitAsync(cancellationToken);
+    }
+
+    public async Task<IEnumerable<T>> GetByAsync(IPaginationSpecification<T> specification, CancellationToken cancellationToken)
     {
         IQueryable<T> query = _dbSet;
         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = specification.GetOrderBy();
@@ -40,7 +46,7 @@ public class SqlRepository<T, TId> : IRepository<T, TId>, IDisposable where T : 
         return await orderBy(query).Skip(specification.Skip).Take(specification.Top).ToListAsync(cancellationToken);
     }
 
-    public async Task<T?> GetBy(ISpecification<T> specification, CancellationToken cancellationToken)
+    public async Task<T?> GetByAsync(ISpecification<T> specification, CancellationToken cancellationToken)
     {
         IQueryable<T> query = _dbSet;
         if (specification.Query is not null)
@@ -51,7 +57,7 @@ public class SqlRepository<T, TId> : IRepository<T, TId>, IDisposable where T : 
         return await query.FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<bool> Any(ISpecification<T> specification, CancellationToken cancellationToken)
+    public async Task<bool> AnyAsync(ISpecification<T> specification, CancellationToken cancellationToken)
     {
         if (specification.Query is not null)
         {
@@ -60,7 +66,7 @@ public class SqlRepository<T, TId> : IRepository<T, TId>, IDisposable where T : 
         return await _dbSet.AnyAsync(cancellationToken);
     }
 
-    public async Task<int> Count(ISpecification<T> specification, CancellationToken cancellationToken)
+    public async Task<int> CountAsync(ISpecification<T> specification, CancellationToken cancellationToken)
     {
         if (specification.Query is not null)
         {
@@ -71,7 +77,7 @@ public class SqlRepository<T, TId> : IRepository<T, TId>, IDisposable where T : 
 
     public async Task Commit(CancellationToken cancellationToken)
     {
-        await _context.Commit(cancellationToken).ConfigureAwait(false);
+        await _context.CommitAsync(cancellationToken).ConfigureAwait(false);
     }
 
     public void Dispose()

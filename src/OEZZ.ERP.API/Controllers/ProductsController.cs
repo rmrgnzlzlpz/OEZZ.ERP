@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using OEZZ.ERP.Application.Base;
 using OEZZ.ERP.Application.Common.DTOs;
 using OEZZ.ERP.Application.UseCases.Products.CreateProduct;
+using OEZZ.ERP.Application.UseCases.Products.DeleteProduct;
 using OEZZ.ERP.Application.UseCases.Products.ListProducts;
 using IResult = OEZZ.ERP.Application.Base.IResult;
 
@@ -34,5 +35,14 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<IResult<PaginatedResponse<ProductDto>>>> ListProducts([FromQuery] ListProductsQuery query)
     {
         return Ok(await _mediator.Send(query));
+    }
+
+    [HttpDelete("{id:guid}")]
+    [ProducesDefaultResponseType(typeof(IResult))]
+    [ProducesErrorResponseType(typeof(IResult))]
+    public async Task<ActionResult<IResult>> DeleteProduct(Guid id)
+    {
+        var response = await _mediator.Send(new DeleteProductCommand(id));
+        return StatusCode(response.Code, response);
     }
 }
