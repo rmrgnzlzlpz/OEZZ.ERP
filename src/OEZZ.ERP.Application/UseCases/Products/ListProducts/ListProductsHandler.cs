@@ -24,12 +24,13 @@ public class ListProductsHandler : IRequestHandler<ListProductsQuery, IResult<Pa
             request.Skip,
             request.Search,
             request.Order.IsAscending(),
-            request.OrderBy
+            request.OrderBy,
+            includes: x => x.Subcategory!
         );
         IEnumerable<Product> products = await _productRepository.GetByAsync(specification, cancellationToken);
         int totalProducts = await _productRepository.CountAsync(specification, cancellationToken);
         PaginatedResponse<ProductDto> paginatedResponse = new(
-            Data: products.Select(x => new ProductDto(x.SubcategoryId, x.Name, x.Status, x.CreatedAt, x.UpdatedAt)),
+            Data: products.Select(x => new ProductDto(x.SubcategoryId,  x.Subcategory?.Name , x.Name, x.Status, x.CreatedAt, x.UpdatedAt)),
             TotalRecords: totalProducts
         );
 

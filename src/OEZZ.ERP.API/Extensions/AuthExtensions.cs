@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using OEZZ.ERP.API.Security;
@@ -18,9 +18,9 @@ public static class AuthExtensions
         {
             o.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidIssuer = configuration["ERP.Jwt:Issuer"],
-                ValidAudience = configuration["ERP.Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["ERP.Jwt:Key"])),
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,

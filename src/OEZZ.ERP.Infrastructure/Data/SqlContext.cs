@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using OEZZ.ERP.Domain.Base;
@@ -21,7 +21,7 @@ public class SqlContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        var schema = _configuration.GetValue<string>("ERP.Persistence:Schema");
+        var schema = _configuration.GetValue<string>("Persistence:Schema");
         modelBuilder.HasDefaultSchema(schema);
 
         modelBuilder.ApplyConfiguration(new BaseEntityConfiguration<Company>());
@@ -34,10 +34,9 @@ public class SqlContext : DbContext
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
+        var utcNow = DateTime.UtcNow;
         foreach (var entry in ChangeTracker.Entries<TenantEntity<Guid>>().ToList())
         {
-            var utcNow = DateTime.UtcNow;
-            entry.Entity.UpdatedAt = utcNow;
             switch (entry.State)
             {
                 case EntityState.Added:
@@ -46,11 +45,23 @@ public class SqlContext : DbContext
                     entry.Entity.CreatedAt = utcNow;
                     break;
                 }
+                case EntityState.Modified:
+                {
+                    entry.Entity.UpdatedAt = utcNow;
+                    break;
+                }
                 case EntityState.Deleted:
                 {
+                    entry.Entity.UpdatedAt = utcNow;
                     entry.Entity.Status = Status.Deleted;
                     break;
                 }
+                case EntityState.Detached:
+                    break;
+                case EntityState.Unchanged:
+                    break;
+                default:
+                    throw new InvalidCastException();
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Models;
 
 namespace OEZZ.ERP.API.Extensions;
 
@@ -13,16 +13,16 @@ public static class OpenApiExtensions
                 Version = "v1",
                 Title = "ToDo API",
                 Description = "An ASP.NET Core Web API for managing ToDo items",
-                TermsOfService = new Uri(configuration.GetValue<string>("ERP.OpenApi:TermsUrl")),
+                TermsOfService = new Uri(configuration.GetValue<string>("OpenApi:TermsUrl")),
                 Contact = new OpenApiContact
                 {
                     Name = "Example Contact",
-                    Url = new Uri(configuration.GetValue<string>("ERP.OpenApi:ContactUrl"))
+                    Url = new Uri(configuration.GetValue<string>("OpenApi:ContactUrl"))
                 },
                 License = new OpenApiLicense
                 {
                     Name = "Example License",
-                    Url = new Uri(configuration.GetValue<string>("ERP.OpenApi:LicenseUrl"))
+                    Url = new Uri(configuration.GetValue<string>("OpenApi:LicenseUrl"))
                 }
             });
             

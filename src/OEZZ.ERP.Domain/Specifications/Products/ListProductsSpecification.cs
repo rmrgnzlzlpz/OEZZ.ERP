@@ -1,10 +1,12 @@
-﻿using OEZZ.ERP.Domain.Entities;
+﻿using System.Linq.Expressions;
+using OEZZ.ERP.Domain.Entities;
 
 namespace OEZZ.ERP.Domain.Specifications.Products;
 
 public class ListProductsSpecification : PaginationSpecification<Product>
 {
-    public ListProductsSpecification(int top, int skip, string search, bool ascending, string orderBy) : base(top, skip, ascending, orderBy)
+    public ListProductsSpecification(int top, int skip, string search, bool ascending, string orderBy, string includeProperties = "", params Expression<Func<Product, object>>[] includes)
+        : base(top, skip, ascending, orderBy, includeProperties, includes)
     {
         Query = product => product.Name.ToUpper().Contains(search.ToUpper());
     }

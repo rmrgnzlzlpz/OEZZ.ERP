@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
@@ -17,9 +17,9 @@ public class TokenHelper
 
     public string CreateToken(UserLoginDto loginDto)
     {
-        var issuer = _configuration["ERP.Jwt:Issuer"];
-        var audience = _configuration["ERP.Jwt:Audience"];
-        var key = Encoding.ASCII.GetBytes(_configuration["ERP.Jwt:Key"]);
+        var issuer = _configuration["Jwt:Issuer"];
+        var audience = _configuration["Jwt:Audience"];
+        var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Name, loginDto.Username),

@@ -34,7 +34,8 @@ public class ProductsController : ControllerBase
     [ProducesErrorResponseType(typeof(IResult))]
     public async Task<ActionResult<IResult<PaginatedResponse<ProductDto>>>> ListProducts([FromQuery] ListProductsQuery query)
     {
-        return Ok(await _mediator.Send(query));
+        var response = await _mediator.Send(query);
+        return StatusCode(response.Code, response);
     }
 
     [HttpDelete("{id:guid}")]

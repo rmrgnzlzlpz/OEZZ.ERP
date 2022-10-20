@@ -5,5 +5,6 @@ namespace OEZZ.ERP.Domain.Entities;
 public class Subcategory : TenantEntity<Guid>
 {
     public Guid CategoryId { get; set; }
-    public Category Category { get; set; }
+    public Category? Category { get; set; }
+    public string Name { get; set; } = default!;
 }

@@ -1,4 +1,9 @@
 ﻿@page "/fetchdata"
+@using OEZZ.ERP.SPA.Models
+@using OEZZ.ERP.SPA.Models.Enums
+@using OEZZ.ERP.Application.UseCases.Products.ListProducts
+@using OEZZ.ERP.Application.Base
+@using OEZZ.ERP.Application.Common.DTOs
 @inject HttpClient Http
 
 <PageTitle>Weather forecast</PageTitle>
@@ -7,7 +12,7 @@
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if (products == null)
 {
     <p>
         <em>Loading...</em>
@@ -18,20 +23,22 @@ else
     <table class="table">
         <thead>
         <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
+            <th>Name</th>
+            <th>Subcategory</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Updated</th>
         </tr>
         </thead>
         <tbody>
-        @foreach (var forecast in forecasts)
+        @foreach (var product in products)
         {
             <tr>
-                <td>@forecast.Date.ToShortDateString()</td>
-                <td>@forecast.TemperatureC</td>
-                <td>@forecast.TemperatureF</td>
-                <td>@forecast.Summary</td>
+                <td>@product.Name</td>
+                <td>@product.SubcategoryId</td>
+                <td>@product.Status</td>
+                <td>@product.CreatedAt.ToString("g")</td>
+                <td>@product.UpdatedAt.ToString("g")</td>
             </tr>
         }
         </tbody>
@@ -39,22 +46,11 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private ProductDto[]? products;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        var result = await Http.GetFromJsonAsync<Result<PaginatedResponse<ProductDto>>>("api/Products");
+        products = result?.Data?.Data.ToArray();
     }
-
-    public class WeatherForecast
-    {
-        public DateTime Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
-
 }

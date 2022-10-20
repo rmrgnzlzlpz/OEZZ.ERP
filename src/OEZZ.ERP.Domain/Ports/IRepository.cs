@@ -12,4 +12,5 @@ public interface IRepository<T, in TId> where T : BaseEntity, IEntity<TId>
     Task<T?> GetByAsync(ISpecification<T> specification, CancellationToken cancellationToken);
     Task<bool> AnyAsync(ISpecification<T> specification, CancellationToken cancellationToken);
     Task<int> CountAsync(ISpecification<T> specification, CancellationToken cancellationToken);
+    Task CommitAsync(CancellationToken cancellationToken);
 }

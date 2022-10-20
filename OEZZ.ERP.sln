@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OEZZ.ERP.API", "src\OEZZ.ER
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OEZZ.ERP.SPA", "src\OEZZ.ERP.SPA\OEZZ.ERP.SPA.csproj", "{ECB87A33-16C9-4876-B638-560F71813D48}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OEZZ.ERP.API.Tests", "tests\OEZZ.ERP.API.Tests\OEZZ.ERP.API.Tests.csproj", "{57E2F5CD-EA26-41B4-B53D-246734B5041F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{ECB87A33-16C9-4876-B638-560F71813D48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECB87A33-16C9-4876-B638-560F71813D48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECB87A33-16C9-4876-B638-560F71813D48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57E2F5CD-EA26-41B4-B53D-246734B5041F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57E2F5CD-EA26-41B4-B53D-246734B5041F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57E2F5CD-EA26-41B4-B53D-246734B5041F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57E2F5CD-EA26-41B4-B53D-246734B5041F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

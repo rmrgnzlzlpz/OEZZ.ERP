@@ -3,12 +3,18 @@ using OEZZ.ERP.Domain.Base;
 
 namespace OEZZ.ERP.Domain.Specifications;
 
-public interface ISpecification<TEntity> where TEntity : BaseEntity
+public interface ISpecification<T> where T : BaseEntity
 {
-    Expression<Func<TEntity, bool>>? Query { get; }
+    Expression<Func<T, bool>>? Query { get; }
 }
 
-public interface IPaginationSpecification<T> : ISpecification<T> where T : BaseEntity
+public interface IReadSpecification<T> : ISpecification<T> where T : BaseEntity
+{
+    string[] IncludeProperties { get; }
+    Expression<Func<T, object>>[] Includes { get; }
+}
+
+public interface IPaginationSpecification<T> : IReadSpecification<T> where T : BaseEntity
 {
     int Top { get; }
     int Skip { get; }

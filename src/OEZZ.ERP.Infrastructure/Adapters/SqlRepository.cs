@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using OEZZ.ERP.Domain.Base;
 using OEZZ.ERP.Domain.Ports;
 using OEZZ.ERP.Domain.Specifications;
@@ -21,7 +22,6 @@ public class SqlRepository<T, TId> : IRepository<T, TId>, IDisposable where T : 
     {
         _ = entity ?? throw new ArgumentNullException(nameof(entity));
         await _dbSet.AddAsync(entity, cancellationToken);
-        await _context.CommitAsync(cancellationToken);
     }
 
     public async Task<T?> FindAsync(TId id, CancellationToken cancellationToken)
@@ -29,10 +29,10 @@ public class SqlRepository<T, TId> : IRepository<T, TId>, IDisposable where T : 
         return await _dbSet.FindAsync(new object?[] { id }, cancellationToken: cancellationToken);
     }
 
-    public async Task DeleteAsync(T entity, CancellationToken cancellationToken)
+    public Task DeleteAsync(T entity, CancellationToken cancellationToken)
     {
         _ = _dbSet.Remove(entity);
-        await _context.CommitAsync(cancellationToken);
+        return Task.CompletedTask.WaitAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<T>> GetByAsync(IPaginationSpecification<T> specification, CancellationToken cancellationToken)
@@ -43,6 +43,11 @@ public class SqlRepository<T, TId> : IRepository<T, TId>, IDisposable where T : 
         {
             query = _dbSet.Where(specification.Query);
         }
+
+        query = specification.IncludeProperties.Aggregate(query, (current, include) => current.Include(include));
+
+        query = specification.Includes.Aggregate(query, (current, include) => current.Include(include));
+
         return await orderBy(query).Skip(specification.Skip).Take(specification.Top).ToListAsync(cancellationToken);
     }
 
@@ -63,6 +68,7 @@ public class SqlRepository<T, TId> : IRepository<T, TId>, IDisposable where T : 
         {
             return await _dbSet.AnyAsync(specification.Query, cancellationToken);
         }
+
         return await _dbSet.AnyAsync(cancellationToken);
     }
 
@@ -72,10 +78,11 @@ public class SqlRepository<T, TId> : IRepository<T, TId>, IDisposable where T : 
         {
             return await _dbSet.CountAsync(specification.Query, cancellationToken);
         }
+
         return await _dbSet.CountAsync(cancellationToken);
     }
 
-    public async Task Commit(CancellationToken cancellationToken)
+    public async Task CommitAsync(CancellationToken cancellationToken)
     {
         await _context.CommitAsync(cancellationToken).ConfigureAwait(false);
     }
